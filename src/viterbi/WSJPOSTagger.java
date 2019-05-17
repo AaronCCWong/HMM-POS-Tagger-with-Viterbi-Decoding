@@ -28,12 +28,9 @@ public class WSJPOSTagger {
         BigramModel bigramModel = new BigramModel(MAX_SUFFIX_LENGTH);
         bigramModel.train(trainFile);
 
-
-
         SuffixTreeBuilder treeBuilder = new SuffixTreeBuilder(MAX_SUFFIX_LENGTH, MAX_WORD_FREQUENCY);
         SuffixTree upperCaseTree = treeBuilder.buildUpperCaseTree(bigramModel);
         SuffixTree lowerCaseTree = treeBuilder.buildLowerCaseTree(bigramModel);
-
 
         String testFilename = args[1];
         File testFile = new File(testFilename);

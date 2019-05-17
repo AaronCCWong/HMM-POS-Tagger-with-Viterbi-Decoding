@@ -5,4 +5,4 @@ WSJ_24.pos
 .classpath
 .project
 
-viterbi/*.class
+src/viterbi/*.class

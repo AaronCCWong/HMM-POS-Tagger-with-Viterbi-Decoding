@@ -24,6 +24,8 @@ java -cp src viterbi.WSJPOSTagger WSJ_POS_CORPUS_FOR_STUDENTS/WSJ_02-21.pos TEST
 where `TEST_FILE` is the file with sentences that you want to tag, `MAX_SUFFIX_LENGTH` is the maximum suffix length to use for the suffix tree and
 `MAX_WORD_FREQUENCY` is the maximum word frequency as found in the training set of the words to use for the suffix tree.
 
+**Note**: The sentences in the test file must have the same format as the sentences in `WSJ_POS_CORPUS_FOR_STUDENTS/WSJ_23.words`.
+
 ## Implementation Details
 
 This is a bigram Hidden Markov Model part of speech tagger that uses the Viterbi algorithm for decoding.

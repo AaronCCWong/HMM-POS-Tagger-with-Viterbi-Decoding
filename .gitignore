@@ -5,3 +5,4 @@ bin/
 .project
 
 src/viterbi/*.class
+Score.java

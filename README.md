@@ -26,7 +26,7 @@ where `TEST_FILE` is the file with sentences that you want to tag, `MAX_SUFFIX_L
 
 ## Implementation Details
 
-This is a Hidden Markov Model part of speech tagger that uses the Viterbi algorithm for decoding.
+This is a bigram Hidden Markov Model part of speech tagger that uses the Viterbi algorithm for decoding.
 The model is trained on the Wall Street Journal POS corpus and attempts to handle unknown words by performing suffix analysis using suffix trees as described by [(Brants, 2000)](#brants).
 
 ## References

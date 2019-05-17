@@ -1,12 +1,17 @@
 package viterbi;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class BigramModel {
+
+    private Integer MAX_SUFFIX_LENGTH;
 
     private Integer sentenceCount;
     private Integer totalTagCount;
@@ -17,7 +22,9 @@ public class BigramModel {
     private Map<String, Integer> wordCount;
     private Map<String, Map<String, Integer>> wordTagCount;
 
-    public BigramModel() {
+    public BigramModel(Integer maxSuffixLength) {
+        MAX_SUFFIX_LENGTH = maxSuffixLength;
+
         sentenceCount = 0;
         totalTagCount = 0;
 
@@ -27,6 +34,74 @@ public class BigramModel {
         tagWordCount = new HashMap<>();
         wordCount = new HashMap<>();
         wordTagCount = new HashMap<>();
+    }
+
+    public void train(File file) {
+        try {
+            Scanner sc = new Scanner(file);
+            String prevTag = "";
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                if (line.isEmpty()) {
+                    prevTag = "";
+                    continue;
+                }
+
+                String[] wordTag = line.split("\t");
+                String word = wordTag[0];
+                String tag = wordTag[1];
+
+                incrementWordCount(word);
+                incrementTagCount(tag);
+                incrementTagWordCount(tag, word);
+                if (prevTag != null && !prevTag.isEmpty()) {
+                    incrementTagTansitionCount(prevTag, tag);
+                } else if (prevTag.isEmpty()) {
+                    incrementTagStartCount(tag);
+                }
+                prevTag = tag;
+            }
+
+            sc.close();
+        } catch (FileNotFoundException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+    }
+
+    public EvaluationResult evaluate(SuffixTree upperCaseTree, SuffixTree lowerCaseTree, File words, String outputFilename) {
+        List<List<String>> sentenceTags = new ArrayList<>();
+        List<List<String>> sentences = new ArrayList<>();
+
+        try {
+            Scanner sc = new Scanner(words);
+            Viterbi viterbi = new Viterbi(this, upperCaseTree, lowerCaseTree, MAX_SUFFIX_LENGTH);
+
+            List<String> currentSentence = new ArrayList<>();
+            while (sc.hasNextLine()) {
+                String word = sc.nextLine();
+
+                if (word.isEmpty()) {
+                    sentenceTags.add(viterbi.run(currentSentence));
+                    sentences.add(currentSentence);
+                    currentSentence = new ArrayList<>();
+                } else {
+                    currentSentence.add(word);
+                }
+            }
+
+            if (currentSentence.size() > 0) {
+                sentenceTags.add(viterbi.run(currentSentence));
+                sentences.add(currentSentence);
+            }
+            sc.close();
+        } catch (FileNotFoundException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+
+        return new EvaluationResult(sentences, sentenceTags);
     }
 
     public List<String> getWords(boolean upperCase) {

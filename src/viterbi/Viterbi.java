@@ -93,11 +93,11 @@ public class Viterbi {
             return model.getEmissionProbability(tags.get(state), word);
         }
 
-        Map<Integer, Double> stateProbs = getSuffixTagStats(word);
+        Map<Integer, Double> stateProbs = getSuffixStats(word);
         return stateProbs.get(state);
     }
 
-    private Map<Integer, Double> getSuffixTagStats(String word) {
+    private Map<Integer, Double> getSuffixStats(String word) {
         Integer numTags = tags.size();
 
         Map<Integer, Double> stateProbs = new HashMap<>();
@@ -106,28 +106,16 @@ public class Viterbi {
             Integer suffixLength = Math.min(MAX_SUFFIX_LENGTH, word.length());
             String suffix = word.substring(word.length() - suffixLength);
 
-            Double tagSuffixProb = 0.0;
-            Double suffixProb = 0.0;
-            Double tagProb = 0.0;
+            SuffixStats stats;
             if (Character.isUpperCase(word.charAt(0))) {
-                while (!upperCaseTree.hasSuffix(suffix) && suffix.length() > 0) {
-                    suffix = suffix.substring(1);
-                }
-                tagSuffixProb = upperCaseTree.getTagSuffixProbability(suffix, tag);
-                suffixProb = upperCaseTree.getSuffixProbability(suffix);
-                tagProb = upperCaseTree.getTagProbability(suffix, tag);
+                stats = new SuffixStats(upperCaseTree, suffix, tag);
             } else {
-                while (!lowerCaseTree.hasSuffix(suffix) && suffix.length() > 0) {
-                    suffix = suffix.substring(1);
-                }
-                tagSuffixProb = lowerCaseTree.getTagSuffixProbability(suffix, tag);
-                suffixProb = lowerCaseTree.getSuffixProbability(suffix);
-                tagProb = lowerCaseTree.getTagProbability(suffix, tag);
+                stats = new SuffixStats(lowerCaseTree, suffix, tag);
             }
 
             Double probWordIsTag = 0.0; // handles case when tag never occurs in the suffix tree
-            if (tagProb > 0.0) {
-                probWordIsTag = tagSuffixProb * suffixProb / tagProb;
+            if (stats.tagProb > 0.0) {
+                probWordIsTag = stats.tagSuffixProb * stats.suffixProb / stats.tagProb;
             }
 
             stateProbs.put(state, probWordIsTag);

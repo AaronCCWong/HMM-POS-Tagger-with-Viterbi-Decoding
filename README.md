@@ -6,6 +6,7 @@ The model is trained on the Wall Street Journal POS corpus and attempts to handl
 ## Try out a trained version of the model
 
 [Trained POS tagger](https://www.aaronccwong.com/pos-tagger)
+
 The code for that application can be found [here](https://github.com/AaronCCWong/hmm-pos-tagger-service).
 
 ## To Run

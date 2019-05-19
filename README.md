@@ -3,6 +3,11 @@
 This is a bigram Hidden Markov Model part of speech tagger that uses the Viterbi algorithm for decoding.
 The model is trained on the Wall Street Journal POS corpus and attempts to handle unknown words by performing suffix analysis using suffix trees as described by [(Brants, 2000)](#brants).
 
+## Try out a trained version of the model
+
+[Trained POS tagger](https://www.aaronccwong.com/pos-tagger)
+The code for that application can be found [here](https://github.com/AaronCCWong/hmm-pos-tagger-service).
+
 ## To Run
 
 This was primarily tested on Java 11.

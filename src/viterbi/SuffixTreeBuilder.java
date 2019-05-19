@@ -10,27 +10,30 @@ public class SuffixTreeBuilder {
 
     private Integer MAX_WORD_FREQUENCY;
     private Integer MAX_SUFFIX_LENGTH;
+    private BigramModel model;
 
-    public SuffixTreeBuilder(Integer maxSuffixLength, Integer maxWordFreq) {
+    public SuffixTreeBuilder(BigramModel bigramModel, Integer maxSuffixLength, Integer maxWordFreq) {
         MAX_SUFFIX_LENGTH = maxSuffixLength;
         MAX_WORD_FREQUENCY = maxWordFreq;
+
+        model = bigramModel;
     }
 
-    public SuffixTree buildUpperCaseTree(BigramModel model) {
+    public SuffixTree buildUpperCaseTree() {
         boolean upperCase = true;
         List<String> words = model.getWords(upperCase);
 
-        return buildTree(model, words);
+        return buildTree(words);
     }
 
-    public SuffixTree buildLowerCaseTree(BigramModel model) {
+    public SuffixTree buildLowerCaseTree() {
         boolean upperCase = false;
         List<String> words = model.getWords(upperCase);
 
-        return buildTree(model, words);
+        return buildTree(words);
     }
 
-    public SuffixTree buildTree(BigramModel model, List<String> words) {
+    public SuffixTree buildTree(List<String> words) {
         List<String> suffixWords = new ArrayList<>();
         for (String word : words) {
             if (model.getWordCount(word) < MAX_WORD_FREQUENCY) {
